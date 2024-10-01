@@ -1,10 +1,11 @@
+# Use a base image
 FROM python:3.9-slim
 
-# Set environment variables
+# Set environment variables for Chrome and Chromedriver
 ENV CHROMEDRIVER_PATH /usr/bin/chromedriver
 ENV GOOGLE_CHROME_BIN /usr/bin/google-chrome
 
-# Install dependencies
+# Install dependencies, including Google Chrome and Chromedriver
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
@@ -24,8 +25,12 @@ RUN apt-get update && apt-get install -y \
     libatk1.0-0 \
     libcups2 \
     libgbm-dev \
-    google-chrome-stable=113.0.5672.63-1 \
-    chromium-driver=113.0.5672.63-1
+    google-chrome-stable \
+    chromium-driver
+
+# Add logging to verify Chrome and Chromedriver installation paths
+RUN echo "Installed Google Chrome at: $(which google-chrome)"
+RUN echo "Installed Chromedriver at: $(which chromedriver)"
 
 # Copy project files
 COPY . /app
@@ -34,8 +39,8 @@ WORKDIR /app
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
-# Expose port
+# Expose the port
 EXPOSE 5000
 
-# Gunicorn logging and timeout settings
-CMD ["gunicorn", "--log-level=debug", "--timeout", "120", "app:app", "--bind", "0.0.0.0:5000"]
+# Run the Gunicorn server with debug-level logging and a longer timeout
+CMD ["gunicorn", "--log-level=debug", "app:app", "--bind", "0.0.0.0:5000", "--timeout", "120"]
