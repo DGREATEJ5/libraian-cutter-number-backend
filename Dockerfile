@@ -3,9 +3,9 @@ FROM python:3.9-slim
 
 # Set environment variables for Chrome and Chromedriver
 ENV CHROMEDRIVER_PATH /usr/bin/chromedriver
-ENV GOOGLE_CHROME_BIN /usr/bin/google-chrome
+ENV GOOGLE_CHROME_BIN /usr/bin/chromium-browser
 
-# Install dependencies, including Google Chrome and Chromedriver
+# Install dependencies, including Chromium and Chromedriver
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
@@ -25,11 +25,11 @@ RUN apt-get update && apt-get install -y \
     libatk1.0-0 \
     libcups2 \
     libgbm-dev \
-    google-chrome-stable \
+    chromium \
     chromium-driver
 
-# Add logging to verify Chrome and Chromedriver installation paths
-RUN echo "Installed Google Chrome at: $(which google-chrome)"
+# Add logging to verify Chromium and Chromedriver installation paths
+RUN echo "Installed Chromium at: $(which chromium-browser)"
 RUN echo "Installed Chromedriver at: $(which chromedriver)"
 
 # Copy project files
