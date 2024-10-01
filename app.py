@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import os
 import re
 
@@ -49,13 +50,8 @@ def get_cutter_number(last_name):
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
 
-    chrome_bin = os.getenv('GOOGLE_CHROME_BIN', '/app/.apt/usr/bin/google-chrome-stable')
-    chrome_driver_path = os.getenv('CHROMEDRIVER_PATH', '/app/.chromedriver/bin/chromedriver')
-
-    options.binary_location = chrome_bin
-    service = ChromeService(executable_path=chrome_driver_path)
-
-    driver = webdriver.Chrome(service=service, options=options)
+    # Use ChromeDriverManager to install and manage ChromeDriver
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     driver.get("http://cutternumber.com/")
 
     try:
@@ -74,13 +70,10 @@ def get_cutter_number(last_name):
     return cutter_number
 
 def process_title(title):
-    # Check if the title starts with "The" (case insensitive)
     if title.lower().startswith('the '):
-        # Get the second word and its first letter
         words = title.split()
         if len(words) > 1:
             return words[1][0].lower()
-    # Default behavior: get the first letter of the title and make it lowercase
     return title[0].lower()
 
 @app.route('/get-cutter-number', methods=['POST'])
@@ -95,7 +88,6 @@ def cutter_number_endpoint():
     last_name = get_last_name(author)
     cutter_number = get_cutter_number(last_name)
     if cutter_number:
-        # Process the title to handle "The" cases and default behavior
         title_letter = process_title(title)
         cutter_number = cutter_number + title_letter
         return jsonify({'cutter_number': cutter_number}), 200
