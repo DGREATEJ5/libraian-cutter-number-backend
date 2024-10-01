@@ -8,11 +8,6 @@ import re
 
 app = Flask(__name__)
 
-# Health check route
-@app.route("/", methods=["GET"])
-def health_check():
-    return jsonify({"status": "Model is running"}), 200
-
 def get_last_name(author):
     patterns = [
         r'^(?P<last>[\w\-\']+),\s*[\w\.\-\']+',  
