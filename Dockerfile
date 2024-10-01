@@ -32,10 +32,6 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y google-chrome-stable \
     && apt-get install -y chromium-driver
 
-# Debugging: Check Google Chrome and Chromedriver installation
-RUN echo "Installed Google Chrome at: $(which google-chrome)"
-RUN echo "Installed Chromedriver at: $(which chromedriver)"
-
 # Copy project files
 COPY . /app
 WORKDIR /app
@@ -43,8 +39,11 @@ WORKDIR /app
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
+# Check dependencies installed
+RUN pip freeze
+
 # Expose port
 EXPOSE 5000
 
-# Run the application
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000"]
+# Increase timeout for gunicorn and start application
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000", "--timeout", "300"]
