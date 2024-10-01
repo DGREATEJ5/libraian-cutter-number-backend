@@ -24,13 +24,8 @@ RUN apt-get update && apt-get install -y \
     libatk1.0-0 \
     libcups2 \
     libgbm-dev \
-    && rm -f /etc/apt/sources.list.d/google-chrome.list \
-    && rm -f /etc/apt/sources.list.d/google.list \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && apt-get install -y chromium-driver
+    google-chrome-stable=113.0.5672.63-1 \
+    chromium-driver=113.0.5672.63-1
 
 # Copy project files
 COPY . /app
@@ -39,11 +34,8 @@ WORKDIR /app
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
-# Check dependencies installed
-RUN pip freeze
-
 # Expose port
 EXPOSE 5000
 
-# Increase timeout for gunicorn and start application
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000", "--timeout", "300"]
+# Gunicorn logging and timeout settings
+CMD ["gunicorn", "--log-level=debug", "--timeout", "120", "app:app", "--bind", "0.0.0.0:5000"]
