@@ -20,8 +20,13 @@ RUN apt-get update && apt-get install -y \
     libasound2 \
     libatk1.0-0 \
     libcups2 \
-    libgbm-dev \
-    google-chrome-stable
+    libgbm-dev
+
+# Add Google Chrome’s official GPG key and repository
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
+    apt-get update && \
+    apt-get install -y google-chrome-stable
 
 # Install ChromeDriver
 RUN CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` \
