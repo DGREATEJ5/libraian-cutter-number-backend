@@ -24,8 +24,8 @@ RUN apt-get update && apt-get install -y \
     libatk1.0-0 \
     libcups2 \
     libgbm-dev \
-    && rm /etc/apt/sources.list.d/google-chrome.list \
-    && rm /etc/apt/sources.list.d/google.list \
+    && rm -f /etc/apt/sources.list.d/google-chrome.list \
+    && rm -f /etc/apt/sources.list.d/google.list \
     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list' \
     && apt-get update \
