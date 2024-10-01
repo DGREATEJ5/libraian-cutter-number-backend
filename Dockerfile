@@ -32,6 +32,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y google-chrome-stable \
     && apt-get install -y chromium-driver
 
+# Debugging: Check Google Chrome and Chromedriver installation
+RUN echo "Installed Google Chrome at: $(which google-chrome)"
+RUN echo "Installed Chromedriver at: $(which chromedriver)"
+
 # Copy project files
 COPY . /app
 WORKDIR /app
